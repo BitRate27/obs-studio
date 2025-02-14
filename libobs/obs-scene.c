@@ -3116,6 +3116,10 @@ bool obs_sceneitem_set_visible(obs_sceneitem_t *item, bool visible)
 				return false;
 			}
 		}
+	} else {
+		if (os_atomic_dec_long(&item->active_refs) == 0) {
+			obs_source_remove_active_child(item->parent->source, item->source);
+		}
 	}
 
 	calldata_init_fixed(&cd, stack, sizeof(stack));
