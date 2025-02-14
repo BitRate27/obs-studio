@@ -711,6 +711,9 @@ struct obs_source {
 	/* ensures activate/deactivate are only called once */
 	volatile long activate_refs;
 
+	/* ensures preview/depreview are only called once */
+	volatile long preview_refs;
+
 	/* source is in the process of being destroyed */
 	volatile long destroying;
 
