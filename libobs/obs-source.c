@@ -1038,6 +1038,20 @@ static void deactivate_source(obs_source_t *source)
 	obs_source_dosignal(source, "source_deactivate", "deactivate");
 }
 
+static void preview_source(obs_source_t *source)
+{
+	if (source->context.data && source->info.preview)
+		source->info.preview(source->context.data);
+	obs_source_dosignal(source, "source_previewed", "preview");
+}
+
+static void depreview_source(obs_source_t *source)
+{
+	if (source->context.data && source->info.depreview)
+		source->info.depreview(source->context.data);
+	obs_source_dosignal(source, "source_depreview", "depreview");
+}
+
 static void show_source(obs_source_t *source)
 {
 	if (source->context.data && source->info.show)
@@ -1309,18 +1323,18 @@ void obs_source_video_tick(obs_source_t *source, float seconds)
 	now_preview = !!source->preview_refs;
 	if (now_preview != source->preview) {
 		if (now_preview) {
-			//preview_source(source);
+			preview_source(source);
 		} else {
-			//depreview_source(source);
+			depreview_source(source);
 		}
 
 		if (source->filters.num) {
 			for (size_t i = source->filters.num; i > 0; i--) {
 				obs_source_t *filter = source->filters.array[i - 1];
 				if (now_preview) {
-					//preview_source(filter);
+					preview_source(filter);
 				} else {
-					//depreview_source(filter);
+					depreview_source(filter);
 				}
 			}
 		}
