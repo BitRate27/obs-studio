@@ -1238,7 +1238,7 @@ static void async_tick(obs_source_t *source)
 
 void obs_source_video_tick(obs_source_t *source, float seconds)
 {
-	bool now_showing, now_active;
+	bool now_showing, now_active, now_preview;
 
 	if (!obs_source_valid(source, "obs_source_video_tick"))
 		return;
@@ -1303,6 +1303,29 @@ void obs_source_video_tick(obs_source_t *source, float seconds)
 		}
 
 		source->active = now_active;
+	}
+
+	/* call preview/depreview if the reference changed */
+	now_preview = !!source->preview_refs;
+	if (now_preview != source->preview) {
+		if (now_preview) {
+			//preview_source(source);
+		} else {
+			//depreview_source(source);
+		}
+
+		if (source->filters.num) {
+			for (size_t i = source->filters.num; i > 0; i--) {
+				obs_source_t *filter = source->filters.array[i - 1];
+				if (now_preview) {
+					//preview_source(filter);
+				} else {
+					//depreview_source(filter);
+				}
+			}
+		}
+
+		source->preview = now_preview;
 	}
 
 	if (source->context.data && source->info.video_tick)
@@ -4588,11 +4611,11 @@ bool obs_source_add_active_child(obs_source_t *parent, obs_source_t *child)
 	if (info.exists)
 		return false;
 
-	for (int i = 0; i < parent->show_refs; i++) {
-		enum view_type type;
-		type = (i < parent->activate_refs) ? MAIN_VIEW : AUX_VIEW;
-		obs_source_activate(child, type);
-	}
+	if (parent->activate_refs > 0)
+		obs_source_activate(child, MAIN_VIEW);
+
+	if (parent->preview_refs > 0)
+		obs_source_activate(child, AUX_VIEW);
 
 	return true;
 }

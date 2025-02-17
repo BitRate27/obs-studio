@@ -727,6 +727,7 @@ struct obs_source {
 
 	bool active;
 	bool showing;
+	bool preview;
 
 	/* used to temporarily disable sources if needed */
 	bool enabled;
