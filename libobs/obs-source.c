@@ -4645,7 +4645,7 @@ void obs_source_remove_active_child(obs_source_t *parent, obs_source_t *child)
 		enum view_type type;
 		type = (i < parent->activate_refs) ? MAIN_VIEW : AUX_VIEW;
 		obs_source_deactivate(child, type);
-	}
+}
 }
 
 void obs_source_save(obs_source_t *source)
@@ -4843,7 +4843,7 @@ void obs_source_draw(gs_texture_t *texture, int x, int y, uint32_t cx, uint32_t 
 void obs_source_inc_showing(obs_source_t *source)
 {
 	if (obs_source_valid(source, "obs_source_inc_showing"))
-		obs_source_activate(source, AUX_VIEW);
+		obs_source_activate(source, SHOW_VIEW);
 }
 
 void obs_source_inc_active(obs_source_t *source)
@@ -4852,16 +4852,28 @@ void obs_source_inc_active(obs_source_t *source)
 		obs_source_activate(source, MAIN_VIEW);
 }
 
+void obs_source_inc_preview(obs_source_t *source)
+{
+	if (obs_source_valid(source, "obs_source_inc_preview"))
+		obs_source_activate(source, AUX_VIEW);
+}
+
 void obs_source_dec_showing(obs_source_t *source)
 {
 	if (obs_source_valid(source, "obs_source_dec_showing"))
-		obs_source_deactivate(source, AUX_VIEW);
+		obs_source_deactivate(source, SHOW_VIEW);
 }
 
 void obs_source_dec_active(obs_source_t *source)
 {
 	if (obs_source_valid(source, "obs_source_dec_active"))
 		obs_source_deactivate(source, MAIN_VIEW);
+}
+
+void obs_source_dec_preview(obs_source_t *source)
+{
+	if (obs_source_valid(source, "obs_source_dec_preview"))
+		obs_source_deactivate(source, AUX_VIEW);
 }
 
 void obs_source_enum_filters(obs_source_t *source, obs_source_enum_proc_t callback, void *param)

@@ -913,6 +913,7 @@ extern void obs_source_addref(obs_source_t *source);
 enum view_type {
 	MAIN_VIEW,
 	AUX_VIEW,
+	SHOW_VIEW
 };
 
 static inline void obs_source_dosignal(struct obs_source *source, const char *signal_obs, const char *signal_source)
